@@ -1,0 +1,99 @@
+class Student:
+    def __init__(self, name, roll_no, marks):
+        self.name = name
+        self.roll_no = roll_no
+        self.marks = marks
+
+    def display(self):
+        print("Name:", self.name)
+        print("Roll No:", self.roll_no)
+        print("Marks:", self.marks)
+        print("--------------------")
+
+
+students = []
+
+# LOAD DATA SAFELY
+try:
+    with open("students.txt", "r") as f:
+        for line in f:
+            if line.strip() == "":
+                continue
+            parts = line.strip().split(",")
+            if len(parts) != 3:
+                continue
+            name, roll, marks = parts
+            students.append(Student(name, roll, marks))
+except FileNotFoundError:
+    pass
+
+
+def save_all_students():
+    with open("students.txt", "w") as f:
+        for s in students:
+            f.write(f"{s.name},{s.roll_no},{s.marks}\n")
+
+
+while True:
+    print("\n===== STUDENT MANAGEMENT SYSTEM =====")
+    print("1. Add Student")
+    print("2. View Students")
+    print("3. Search Student")
+    print("4. Update Student Marks")
+    print("5. Delete Student")
+    print("6. Exit")
+
+    choice = input("Enter choice: ")
+
+    if choice == "1":
+        name = input("Enter name: ")
+        roll = input("Enter roll no: ")
+        marks = input("Enter marks: ")
+        students.append(Student(name, roll, marks))
+        save_all_students()
+        print("✅ Student added successfully!")
+
+    elif choice == "2":
+        if not students:
+            print("❌ No students found.")
+        else:
+            for s in students:
+                s.display()
+
+    elif choice == "3":
+        roll = input("Enter roll number to search: ")
+        for s in students:
+            if s.roll_no == roll:
+                s.display()
+                break
+        else:
+            print("❌ Student not found.")
+
+    elif choice == "4":
+        roll = input("Enter roll number to update marks: ")
+        for s in students:
+            if s.roll_no == roll:
+                s.marks = input("Enter new marks: ")
+                save_all_students()
+                print("✅ Marks updated successfully!")
+                break
+        else:
+            print("❌ Student not found.")
+
+    elif choice == "5":
+        roll = input("Enter roll number to delete: ")
+        for s in students:
+            if s.roll_no == roll:
+                students.remove(s)
+                save_all_students()
+                print("✅ Student deleted successfully!")
+                break
+        else:
+            print("❌ Student not found.")
+
+    elif choice == "6":
+        print("Exit")
+        break
+
+    else:
+        print("❌ Invalid choice!")
